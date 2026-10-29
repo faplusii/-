@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคำนวณค่างวดโทรศัพท์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fdf4f5;
+        }
+        .pastel-card {
+            background: #ffffff;
+            border: 2px solid #fce7f0;
+        }
+        .pastel-input {
+            background-color: #fff9fa;
+            border: 1.5px solid #fbcfe8;
+        }
+        .pastel-input:focus {
+            border-color: #f472b6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4 sm:px-6">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-pink-100 text-pink-600 text-sm font-semibold mb-2">✨ ระบบคำนวณค่างวด ✨</span>
+            <h1 class="text-3xl font-bold text-gray-800">เครื่องคิดเลขผ่อนโทรศัพท์</h1>
+            <p class="text-gray-500 text-sm mt-1">คำนวณค่างวด ดาวน์ และดอกเบี้ยอย่างแม่นยำ</p>
+        </div>
+
+        <!-- Main Calculator Card -->
+        <div class="pastel-card rounded-3xl p-6 sm:p-8 shadow-xl shadow-pink-100/50 mb-8">
+            
+            <!-- ราคาเครื่องเต็ม -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2 text-sm">📱 ราคาเครื่องเต็ม (บาท)</label>
+                <input type="number" id="fullPrice" placeholder="เช่น 32900" class="pastel-input w-full px-4 py-3 rounded-2xl text-gray-800 text-lg font-medium transition" oninput="calculate()">
+            </div>
+
+            <!-- ส่วนลดเครื่อง -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2 text-sm">🏷️ ส่วนลดเครื่อง (บาท)</label>
+                <input type="number" id="discount" placeholder="เช่น 2000" value="0" class="pastel-input w-full px-4 py-3 rounded-2xl text-gray-800 text-lg font-medium transition" oninput="calculate()">
+                <p class="text-xs text-pink-500 mt-1">* ส่วนลดนี้จะถูกนำไปหักออกจากค่างวดต่อเดือน</p>
+            </div>
+
+            <!-- เงินดาวน์ -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2 text-sm">💳 เงินดาวน์ (%)</label>
+                <select id="downPaymentRate" class="pastel-input w-full px-4 py-3 rounded-2xl text-gray-800 text-md font-medium transition cursor-pointer" onchange="calculate()">
+                    <option value="0">0% (ฟรีดาวน์)</option>
+                    <option value="5">5%</option>
+                    <option value="10">10%</option>
+                    <option value="15">15%</option>
+                    <option value="20">20%</option>
+                    <option value="25">25%</option>
+                    <option value="30">30%</option>
+                    <option value="35">35%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                </select>
+            </div>
+
+            <!-- ดอกเบี้ย -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2 text-sm">📈 ดอกเบี้ยต่อเดือน (%)</label>
+                <select id="interestRate" class="pastel-input w-full px-4 py-3 rounded-2xl text-gray-800 text-md font-medium transition cursor-pointer" onchange="calculate()">
+                    <option value="0.87">0.87%</option>
+                    <option value="0.99">0.99%</option>
+                    <option value="1">1%</option>
+                    <option value="1.15">1.15%</option>
+                    <option value="1.16">1.16%</option>
+                    <option value="3">3%</option>
+                    <option value="5">5%</option>
+                </select>
+            </div>
+
+            <!-- จำนวนเดือนที่ผ่อน -->
+            <div class="mb-8">
+                <label class="block text-gray-700 font-semibold mb-2 text-sm">🗓️ จำนวนเดือนที่ผ่อน</label>
+                <select id="months" class="pastel-input w-full px-4 py-3 rounded-2xl text-gray-800 text-md font-medium transition cursor-pointer" onchange="calculate()">
+                    <option value="3">3 เดือน</option>
+                    <option value="6">6 เดือน</option>
+                    <option value="9">9 เดือน</option>
+                    <option value="10">10 เดือน</option>
+                    <option value="12" selected>12 เดือน</option>
+                    <option value="15">15 เดือน</option>
+                    <option value="18">18 เดือน</option>
+                    <option value="24">24 เดือน</option>
+                    <option value="36">36 เดือน</option>
+                    <option value="48">48 เดือน</option>
+                </select>
+            </div>
+
+            <!-- ผลลัพธ์การคำนวณ -->
+            <div class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-5 sm:p-6 border border-pink-100">
+                <h2 class="text-gray-700 font-bold text-lg mb-4 text-center">📊 สรุปยอดชำระ</h2>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span>ราคาเครื่องหลังหักส่วนลด:</span>
+                        <span id="resNetPrice" class="font-semibold text-gray-800 text-base">0.00 บาท</span>
+                    </div>
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span>เงินดาวน์ที่ต้องจ่าย:</span>
+                        <span id="resDownAmount" class="font-semibold text-gray-800 text-base">0.00 บาท</span>
+                    </div>
+                    <div class="flex justify-between items-center text-gray-600">
+                        <span>ยอดจัดไฟแนนซ์ (ยอดคงเหลือ):</span>
+                        <span id="resLoanAmount" class="font-semibold text-gray-800 text-base">0.00 บาท</span>
+                    </div>
+                    
+                    <hr class="border-pink-200 my-2">
+
+                    <!-- ยอดผ่อนต่อเดือนเด่นๆ -->
+                    <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-pink-100">
+                        <span class="text-gray-500 text-xs block mb-1">ยอดผ่อนชำระต่อเดือน (สุทธิ)</span>
+                        <span id="resMonthlyPayment" class="text-3xl font-extrabold text-pink-600">0.00</span>
+                        <span class="text-gray-600 text-sm font-semibold ml-1">บาท/เดือน</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center text-xs text-gray-400">
+            Cute Phone Calculator • Pastel Theme 🌸
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const fullPrice = parseFloat(document.getElementById('fullPrice').value) || 0;
+            const discount = parseFloat(document.getElementById('discount').value) || 0;
+            const downRate = parseFloat(document.getElementById('downPaymentRate').value) || 0;
+            const interestRatePerMonth = parseFloat(document.getElementById('interestRate').value) || 0;
+            const months = parseInt(document.getElementById('months').value) || 1;
+
+            // คำนวณเงินดาวน์จากราคาเครื่องเต็ม
+            const downAmount = fullPrice * (downRate / 100);
+
+            // ราคาเครื่องหักส่วนลด (ใช้แสดงผล)
+            const netPrice = Math.max(0, fullPrice - discount);
+
+            // ยอดจัดไฟแนนซ์ = ราคาเครื่องเต็ม - เงินดาวน์
+            const principal = Math.max(0, fullPrice - downAmount);
+
+            // ดอกเบี้ยรวมตลอดสัญญา = ยอดจัดไฟแนนซ์ * ดอกเบี้ยต่อเดือน (%) * จำนวนเดือน
+            const totalInterest = principal * (interestRatePerMonth / 100) * months;
+
+            // ยอดรวมทั้งหมดที่จะต้องผ่อน
+            const totalLoanCost = principal + totalInterest;
+
+            // ค่างวดต่อเดือนก่อนหักส่วนลด
+            let monthlyBeforeDiscount = totalLoanCost / months;
+
+            // นำส่วนลดเครื่องไปหักออกจากค่างวดต่อเดือน (ตามเงื่อนไข: ส่วนลดเครื่องจะนำไปเป็นส่วนลดค่างวดต่อเดือน)
+            let monthlyPayment = monthlyBeforeDiscount - (discount / months);
+
+            // ป้องกันติดลบ
+            if (monthlyPayment < 0) monthlyPayment = 0;
+
+            // แสดงผลเป็นทศนิยม 2 ตำแหน่งโดยไม่ต้องปัดเศษ
+            document.getElementById('resNetPrice').innerText = netPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' บาท';
+            document.getElementById('resDownAmount').innerText = downAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' บาท';
+            document.getElementById('resLoanAmount').innerText = principal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' บาท';
+            document.getElementById('resMonthlyPayment').innerText = monthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // รันคำนวณครั้งแรก
+        calculate();
+    </script>
+</body>
+</html>
